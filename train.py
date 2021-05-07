@@ -1,75 +1,45 @@
 import pandas as pd
-import numpy as np
-import torch
-from pathlib import Path
-from torch.utils.data import Dataset , DataLoader
 import pytorch_lightning as pl
 from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.loggers import TensorBoardLogger
-from sklearn.model_selection import train_test_split
-from termcolor import colored
-import textwrap
+from pytorch_lightning.loggers import TensorBoardLogger 
+
 
 from transformers import (
-    AdamW,
-    T5ForConditionalGeneration,
+
     T5TokenizerFast as T5Tokenizer
 )
 
-from tqdm.auto import tqdm
+from model import TranslationModel , TranslationDataModule
 
-tokenizer= T5Tokenizer
+train_df=pd.read_csv('data/train.tsv', sep='\t', index_col=0, encoding='utf8')
+test_df=pd.read_csv('data/test.tsv', sep='\t', index_col=0, encoding='utf8')
+val_df=pd.read_csv('data/val.tsv', sep='\t', index_col=0, encoding='utf8')
 
-class TranslationDataset(Dataset):
-    
-    def __init__(
-        self,
-        data:pd.DataFrame,
-        tokenizer: T5Tokenizer,
-        text_max_token_len: int=128,
-        translation_max_token_len: int=128,
-    ):
-        self.tokenizer = tokenizer
-        self.data = data
-        self.text_max_token_len = text_max_token_len
-        self.translation_max_token_len = translation_max_token_len
-        
-    def __len__(self):
-        return len(self.data)
+N_EPOCHS= 1
+BATCH_SIZE =8
+MODEL_NAME= 't5-base'
+tokenizer = T5Tokenizer.from_pretrained(MODEL_NAME)
+data_module = TranslationDataModule(train_df, test_df, val_df, tokenizer,batch_size=BATCH_SIZE)
 
-    def __getitem__(self, index: int):
-        data_row= self.data.iloc[index]
+model= TranslationModel()
 
-        text= data_row['eng']
+checkpoint_callback = ModelCheckpoint(
+    dirpath="/checkpoints",
+    filename="best-checkpoint",
+    save_top_k=1,
+    verbose=True,
+    monitor="val_loss",
+    mode="min"
+)
 
-        text_encoding = tokenizer(
-            text,
-            max_length = self.text_max_token_len,
-            padding='max_length',
-            truncation=True,
-            return_attention_mask=True,
-            add_special_tokens=True,
-            return_tensors='pt'
-        )
+logger= TensorBoardLogger("lightning_logs", name="translation_test")
 
-        translation_encoding = tokenizer(
-            data_row["de"],
-            max_length = self.translation_max_token_len,
-            padding='max_length',
-            truncation=True,
-            return_attention_mask=True,
-            add_special_tokens=True,
-            return_tensors='pt'
-        )
+trainer = pl.Trainer(
+    logger=logger,
+    checkpoint_callback=checkpoint_callback,
+    max_epochs=N_EPOCHS,
+    gpus=1,
+    progress_bar_refresh_rate=30
+)
 
-        labels = translation_encoding["input_ids"]
-        labels[labels ==0]= -100
-
-        return dict(
-            text=text,
-            translation=data_row["de"],
-            text_input_ids=text_encoding["input_ids"].flatten(),
-            text_attention_mask=text_encoding["attention_mask"].flatten(),
-            labels=labels.flatten(),
-            labels_attention_mask=translation_encoding["attention_mask"].flatten()
-        )
+trainer.fit(model, data_module)

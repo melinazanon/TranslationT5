@@ -1,4 +1,4 @@
-FROM pytorchlightning/pytorch_lightning:base-cuda-py3.7-torch1.8
+FROM pytorchlightning/pytorch_lightning:latest-py3.7-torch1.8
  
 
 COPY requirements.txt ./

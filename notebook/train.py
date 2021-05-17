@@ -30,35 +30,28 @@ if __name__ =='__main__':
 
     model= TranslationModel()
 
-    checkpoint_callback = ModelCheckpoint(
-        dirpath="/checkpoints",
-        filename="best-checkpoint",
-        save_top_k=1,
-        monitor="val_loss",
-        mode="min"
-    )
-
     early_stop_callback = EarlyStopping(
         monitor='val_loss',
-        patience=2,
+        patience=3,
         mode='min'
     )
 
-    logger= TensorBoardLogger("lightning_logs", name="translation_test")
+    logger= TensorBoardLogger("/results/lightning_logs", name="translation_test")
 
     trainer = pl.Trainer(
+        default_root_dir='/results/checkpoints',
         logger=logger,
-        callbacks=[early_stop_callback, checkpoint_callback],
+        callbacks=[early_stop_callback],
         max_epochs=N_EPOCHS,
         gpus=N_GPUS,
-        auto_lr_find=True,  
-        # accelerator='ddp',
-        # plugins='ddp_sharded',
+        #auto_lr_find=True,  
+        accelerator='ddp',
         progress_bar_refresh_rate=10
       
     )
 
-    #trainer.fit(model, data_module)
-    trainer.tune(model, datamodule=data_module)
+    trainer.fit(model, data_module)
+    #trainer.save_checkpoint("test1.ckpt")
+    #trainer.tune(model, datamodule=data_module)
     trainer.test(model, datamodule=data_module)
     

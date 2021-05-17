@@ -95,7 +95,7 @@ class TranslationDataModule(pl.LightningDataModule):
         self.text_max_token_len = text_max_token_len
         self.translation_max_token_len = translation_max_token_len
         
-    def setup(self, stange= None):
+    def setup(self, stage= None):
         self.train_dataset = TranslationDataset(
             self.train_df,
             self.tokenizer,
@@ -122,7 +122,7 @@ class TranslationDataModule(pl.LightningDataModule):
             self.train_dataset,
             batch_size = self.batch_size,
             shuffle=True,
-            num_workers=0
+            num_workers=18
         )
     
     def val_dataloader(self):
@@ -130,7 +130,7 @@ class TranslationDataModule(pl.LightningDataModule):
             self.val_dataset,
             batch_size = self.batch_size,
             shuffle=False,
-            num_workers=0
+            num_workers=18
         )
     
     def test_dataloader(self):
@@ -138,7 +138,7 @@ class TranslationDataModule(pl.LightningDataModule):
             self.test_dataset,
             batch_size = self.batch_size,
             shuffle=False,
-            num_workers=0
+            num_workers=18
         )
 
 
@@ -148,7 +148,7 @@ class TranslationModel(pl.LightningModule):
         super().__init__()
         self.model = T5ForConditionalGeneration.from_pretrained(MODEL_NAME, return_dict=True)
         #Define model structure from pretrained T5
-        self.lr=0.0001
+        self.lr=0.0003
     
     def forward(self, input_ids, attention_mask, decoder_attention_mask, labels=None):
         

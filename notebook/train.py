@@ -33,19 +33,20 @@ if __name__ =='__main__':
     early_stop_callback = EarlyStopping(
         monitor='val_loss',
         patience=3,
-        mode='min'
+        mode='min',
+        verbose=True
     )
 
-    logger= TensorBoardLogger("/results/lightning_logs", name="translation_test")
+    logger= TensorBoardLogger("results/lightning_logs", name="translation_test")
 
     trainer = pl.Trainer(
-        default_root_dir='/results/checkpoints',
+        default_root_dir='results/checkpoints',
         logger=logger,
         callbacks=[early_stop_callback],
         max_epochs=N_EPOCHS,
         gpus=N_GPUS,
         #auto_lr_find=True,  
-        accelerator='ddp',
+        #accelerator='ddp',
         progress_bar_refresh_rate=10
       
     )

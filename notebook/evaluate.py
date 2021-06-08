@@ -2,11 +2,13 @@ import pandas as pd
 import sacrebleu
 from statistics import mean
 import string
+from rouge_metric import PyRouge
+
 
 #-------Setup---------
-
-PATH = 'results/predictions_bs.tsv'
-PATH_WMT ='results/predictions_wmt_bs.tsv'
+MODE = 'top-p'
+PATH = 'results/predictions_'+ MODE +'.tsv'
+PATH_WMT ='results/predictions_wmt_'+ MODE +'.tsv'
 
 test_df=pd.read_csv('data/test.tsv', sep='\t', encoding='utf8')
 predictions_df=pd.read_csv(PATH, sep='\t', index_col=0, encoding='utf8')
@@ -131,3 +133,17 @@ for i in range(len(predictions_df)):
     #print(precision, recall, f1)
 
 print('F1-Score:',mean(f_scores))
+
+
+#-------ROUGE---------
+
+references=[]
+for i in range(len(predictions_df)):
+    for k in range (3):
+        references.append(test_df['eng'].loc[test_df['de']==predictions_df['de'].iloc[i]].reset_index(drop=True).to_list())
+
+# Evaluate document-wise ROUGE scores
+rouge = PyRouge(rouge_n= False, rouge_l=True, rouge_w=True,
+                rouge_w_weight=1.2, rouge_s=True, rouge_su=True, skip_gap=4)
+scores = rouge.evaluate(preds_bleu_3, references)
+print(scores)

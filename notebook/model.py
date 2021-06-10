@@ -5,7 +5,7 @@ import pytorch_lightning as pl
 
 
 from transformers import (
-    AdamW,
+    Adafactor,
     T5ForConditionalGeneration,
     T5TokenizerFast as T5Tokenizer
 )
@@ -22,7 +22,7 @@ class TranslationDataset(Dataset):
         data:pd.DataFrame,
         tokenizer: T5Tokenizer,
         text_max_token_len: int=110,
-        translation_max_token_len: int=80,
+        translation_max_token_len: int=100,
     ):
         self.tokenizer = tokenizer
         self.data = data
@@ -82,9 +82,9 @@ class TranslationDataModule(pl.LightningDataModule):
         test_df: pd.DataFrame,
         val_df: pd.DataFrame,
         tokenizer: T5Tokenizer,
-        batch_size = 8,
+        batch_size = 128,
         text_max_token_len: int=110,
-        translation_max_token_len: int=80
+        translation_max_token_len: int=100
     ):
         super().__init__()
         self.train_df = train_df
@@ -148,7 +148,7 @@ class TranslationModel(pl.LightningModule):
         super().__init__()
         self.model = T5ForConditionalGeneration.from_pretrained(MODEL_NAME, return_dict=True)
         #Define model structure from pretrained T5
-        self.lr=0.0003
+        self.lr=0.001
     
     def forward(self, input_ids, attention_mask, decoder_attention_mask, labels=None):
         
@@ -213,5 +213,5 @@ class TranslationModel(pl.LightningModule):
         return loss
     
     def configure_optimizers(self):
-        return AdamW(self.parameters(), lr=self.lr)
+        return Adafactor(self.parameters(), scale_parameter=False, relative_step=False, warmup_init=False, lr=self.lr)
 

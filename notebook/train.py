@@ -20,7 +20,7 @@ val_df=pd.read_csv('data/val.tsv', sep='\t', index_col=0, encoding='utf8')
 
 N_GPUS=-1
 N_EPOCHS= 20
-BATCH_SIZE =8
+BATCH_SIZE = 128
 MODEL_NAME= 't5-base'
 tokenizer = T5Tokenizer.from_pretrained(MODEL_NAME)
 
@@ -37,10 +37,10 @@ if __name__ =='__main__':
         verbose=True
     )
 
-    logger= TensorBoardLogger("results/lightning_logs", name="translation_test")
+    logger= TensorBoardLogger("lightning_logs", name="translation_test")
 
     trainer = pl.Trainer(
-        default_root_dir='results/checkpoints',
+        default_root_dir='results/v2',
         logger=logger,
         callbacks=[early_stop_callback],
         max_epochs=N_EPOCHS,

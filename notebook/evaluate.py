@@ -6,7 +6,7 @@ from rouge_metric import PyRouge
 
 
 #-------Setup---------
-MODE = 'top-k'
+MODE = 'top-p'
 PATH = 'results/v2/predictions_'+ MODE +'.tsv'
 PATH_WMT ='results/v2/predictions_wmt_'+ MODE +'.tsv'
 

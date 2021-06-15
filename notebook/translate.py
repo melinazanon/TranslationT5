@@ -131,8 +131,8 @@ print('-------Finished translating--------')
 
 df_predictions= pd.DataFrame(english_preds)
 df_predictions['de']= to_english
-df_predictions.to_csv('/results/predictions_'+ MODE +'.tsv' , sep='\t', encoding='utf8')
+df_predictions.to_csv('D:/HAW/Bachelorarbeit/TranslationT5/notebook/results/v2/predictions_'+ MODE +'.tsv' , sep='\t', encoding='utf8')
 
 df_wmt_predictions= pd.DataFrame(english_preds_wmt)
 df_wmt_predictions['de']=wmt14_de
-df_wmt_predictions.to_csv('/results/predictions_wmt_'+ MODE +'.tsv' , sep='\t', encoding='utf8')
+df_wmt_predictions.to_csv('D:/HAW/Bachelorarbeit/TranslationT5/notebook/results/v2/predictions_wmt_'+ MODE +'.tsv' , sep='\t', encoding='utf8')

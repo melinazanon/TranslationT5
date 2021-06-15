@@ -4,13 +4,12 @@ FROM pytorch/pytorch:1.6.0-cuda10.1-cudnn7-devel
 COPY requirements.txt ./
 
 COPY model.py ./
-COPY train.py ./
 COPY translate.py ./
 
-COPY data/test.tsv ./data
+COPY data ./data
 
 COPY wmt14 ./wmt14
-
+COPY results ./results
 RUN pip install -f https://download.pytorch.org/whl/torch_stable.html -r requirements.txt
 
 ENTRYPOINT ["python3", "translate.py"]

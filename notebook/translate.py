@@ -18,15 +18,15 @@ print('Generation mode: '+ args.mode)
 MODE=args.mode# Chose decoding Method: bs=Beam Search, dbs=Diverse Beam Search, top-k or top-p Sampling
 NUM_OUTPUTS=3
 MODEL_NAME= 't5-base'
-CKPT_PATH= 'D:/HAW/Bachelorarbeit/Test/results/results/lightning_logs/translation_test/version_0/checkpoints/epoch=2-step=4769.ckpt'
+CKPT_PATH= 'results/v2/results/lightning_logs/translation_v2/version_0/checkpoints/epoch=1-step=397-val_loss=0.736.ckpt'
 
 test_df=pd.read_csv('data/test.tsv', sep='\t', index_col=0, encoding='utf8')
 
 #Load the WMT 14 newstest data
-with open('wmt14\de-en.de',encoding='utf8') as f:
+with open('wmt14/de-en.de',encoding='utf8') as f:
     wmt14_de = f.read().splitlines()
 
-with open('wmt14\de-en.en',encoding='utf8') as f:
+with open('wmt14/de-en.en',encoding='utf8') as f:
     wmt14_en = f.read().splitlines()
 
 
@@ -131,8 +131,8 @@ print('-------Finished translating--------')
 
 df_predictions= pd.DataFrame(english_preds)
 df_predictions['de']= to_english
-df_predictions.to_csv('results/v2/predictions_'+ MODE +'.tsv' , sep='\t', encoding='utf8')
+df_predictions.to_csv('/results/predictions_'+ MODE +'.tsv' , sep='\t', encoding='utf8')
 
 df_wmt_predictions= pd.DataFrame(english_preds_wmt)
 df_wmt_predictions['de']=wmt14_de
-df_wmt_predictions.to_csv('results/v2/predictions_wmt_'+ MODE +'.tsv' , sep='\t', encoding='utf8')
+df_wmt_predictions.to_csv('/results/predictions_wmt_'+ MODE +'.tsv' , sep='\t', encoding='utf8')

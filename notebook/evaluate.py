@@ -6,9 +6,9 @@ from rouge_metric import PyRouge
 
 
 #-------Setup---------
-MODE = 'top-p'
-PATH = 'results/predictions_'+ MODE +'.tsv'
-PATH_WMT ='results/predictions_wmt_'+ MODE +'.tsv'
+MODE = 'top-k'
+PATH = 'results/v2/predictions_'+ MODE +'.tsv'
+PATH_WMT ='results/v2/predictions_wmt_'+ MODE +'.tsv'
 
 test_df=pd.read_csv('data/test.tsv', sep='\t', encoding='utf8')
 predictions_df=pd.read_csv(PATH, sep='\t', index_col=0, encoding='utf8')

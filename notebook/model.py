@@ -82,7 +82,7 @@ class TranslationDataModule(pl.LightningDataModule):
         test_df: pd.DataFrame,
         val_df: pd.DataFrame,
         tokenizer: T5Tokenizer,
-        batch_size = 128,
+        batch_size = 64,
         text_max_token_len: int=110,
         translation_max_token_len: int=100
     ):

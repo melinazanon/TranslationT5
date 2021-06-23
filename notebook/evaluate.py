@@ -7,8 +7,8 @@ from rouge_metric import PyRouge
 
 #-------Setup---------
 MODE = 'top-p'
-PATH = 'results/v2/predictions_'+ MODE +'.tsv'
-PATH_WMT ='results/v2/predictions_wmt_'+ MODE +'.tsv'
+PATH = 'results/v3/predictions_'+ MODE +'.tsv'
+PATH_WMT ='results/v3/predictions_wmt_'+ MODE +'.tsv'
 
 test_df=pd.read_csv('data/test.tsv', sep='\t', encoding='utf8')
 predictions_df=pd.read_csv(PATH, sep='\t', index_col=0, encoding='utf8')
@@ -16,7 +16,7 @@ predictions_wmt_df=pd.read_csv(PATH_WMT, sep='\t', index_col=0, encoding='utf8')
 
 #Load the WMT 14 newstest data
 
-with open('D:\HAW\Bachelorarbeit\Daten\.sacrebleu\wmt14\de-en.en',encoding='utf8') as f:
+with open('wmt14/de-en.en',encoding='utf8') as f:
     wmt14_en = f.read().splitlines()
 
 #-------Bleu-Score---------
@@ -125,8 +125,6 @@ for i in range(len(predictions_df)):
     recall=tp / (tp + fn)
     if precision==0 and recall==0:
         f1= 0
-        # print(x)
-        # print(y_pred)
     else:
         f1 = 2 * (precision * recall) / (precision + recall)
     f_scores.append(f1)

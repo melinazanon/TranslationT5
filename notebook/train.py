@@ -44,22 +44,19 @@ if __name__ =='__main__':
         filename='{epoch}-{step}-{val_loss:.3f}'
     )
 
-    logger= TensorBoardLogger("/results/lightning_logs/", name="translation_v2")
+    logger= TensorBoardLogger("/results/lightning_logs/", name="translation_v3")
 
     trainer = pl.Trainer(
         default_root_dir='/results/checkpoints/',
         logger=logger,
-        callbacks=[early_stop_callback, checkpoint_callback],
+        callbacks=[early_stop_callback ,checkpoint_callback],
         max_epochs=N_EPOCHS,
-        gpus=N_GPUS,
-        #auto_lr_find=True,  
+        gpus=N_GPUS, 
         accelerator='ddp',
         progress_bar_refresh_rate=10
       
     )
 
     trainer.fit(model, data_module)
-    #trainer.save_checkpoint("test1.ckpt")
-    #trainer.tune(model, datamodule=data_module)
     trainer.test(model, datamodule=data_module)
     

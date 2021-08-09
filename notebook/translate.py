@@ -95,7 +95,6 @@ def translate(text, mode):
 
 #Inputs
 to_english = test_df['de'].unique().tolist()
-#to_english = to_english[20:40]
 
 #-------Example Translation---------
 sample_row = test_df.iloc[49]
@@ -115,10 +114,8 @@ for k, x in enumerate(to_english):
     
 
 #WMT 14 Dataset
-# wmt14_de= wmt14_de[:20]
-# wmt14_en = wmt14_en[:20]
 english_preds_wmt = []
-# print(wmt14_en)
+
 print('-------Start translating WMT--------')
 
 for k, x in enumerate(wmt14_de):

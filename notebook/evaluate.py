@@ -93,6 +93,8 @@ print("German to English WMT all translations: ", de_eng_bleu_wmt_3.score)
 
 #-------F1-Score---------
 f_scores=[]
+p=[]
+r=[]
 
 for i in range(len(predictions_df)):
     y_true=test_df['eng'].loc[test_df['de']==predictions_df['de'].iloc[i]].reset_index(drop=True)
@@ -123,6 +125,8 @@ for i in range(len(predictions_df)):
 
     precision=tp / (tp + fp)
     recall=tp / (tp + fn)
+    p.append(precision)
+    r.append(recall)
     if precision==0 and recall==0:
         f1= 0
     else:
@@ -131,6 +135,8 @@ for i in range(len(predictions_df)):
     #print(precision, recall, f1)
 
 print('F1-Score:',mean(f_scores))
+print('Precision:',mean(p))
+print('Recall:',mean(r))
 
 
 #-------ROUGE---------
